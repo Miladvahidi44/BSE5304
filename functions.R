@@ -1,29 +1,29 @@
 # functions ...............
-function(Yobs,Ysim){
+NSE = function(Yobs,Ysim){
   return(1-sum((Yobs-Ysim)^2, na.rm=TRUE)/sum((Yobs-mean(Yobs, na.rm=TRUE))^2, na.rm=TRUE))
 }
 
 
-function(AWprev,dP,AWC){
+soil_wetting_above_capacity=function(AWprev,dP,AWC){
   AW<-AWC
   excess<-AWprev+dP-AWC
   c(AW,excess)
 }
 
 
-function(AWprev,dP,AWC){
+soildrying =function(AWprev,dP,AWC){
   AW<-AWprev*exp(dP/AWC)
   excess<-0.0
   c(AW,excess)
 }
 
-function(AWprev,dP,AWC){
+soilwetting = function(AWprev,dP,AWC){
   AW<-AWprev+dP
   excess<-0.0
   c(AW,excess)
 }
 
-function(TMWB=TMWB,fcres=.25,SFTmp=0,bmlt6=2.5,bmlt12=1,Tlag=.5,AWCval=200,Slope=0){
+TMWBmodel = function(TMWB=TMWB,fcres=.25,SFTmp=0,bmlt6=2.5,bmlt12=1,Tlag=.5,AWCval=200,Slope=0){
   # Now complete the model… what flows from TopSlope to MidSlope, and down to 
   # BotSlope. How will these be connected?
   
