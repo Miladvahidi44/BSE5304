@@ -389,14 +389,7 @@ Updated_amount = 0.1*amount
 Total = sum(TIC03$DS)
 Years = Updated_amount/Total*(2022-2016)
 
-
-rcp01=mean(TIC01$DF+TIC01$DS)*365
-rcp02=mean(TIC02$DF+TIC02$DS)*365
-rcp03=mean(TIC03$DF+TIC03$DS)*365
-rcp04=mean(TIC04$DF+TIC04$DS)*365
-rcp05=mean(TIC05$DF+TIC05$DS)*365
-
-### 
+## Question 4 ............
 
 
 p_loss<-function(Runoffmodel=TIC05,tau=9.3, dt=1, kF=.015, TI=1){
@@ -421,9 +414,9 @@ p_loss<-function(Runoffmodel=TIC05,tau=9.3, dt=1, kF=.015, TI=1){
   detach(DPTI05)
   rm(list=c("MF","DF")) # Clean up the environment 
   muTS_TI05=(((520-0)/5)*VSAsol$TIClass[TI]+0) # use VSAsol$TIClass table to 
-
+  
   MS_TI05=(((18.5-3.7)/5)*VSAsol$TIClass[TI]+3.7)*2000  # range from Easton et 
-
+  
   QS= 3.0 # A guess using the middle of the range 1-5
   TR=20   # reference Temperature from Table 2.
   DPTI05$muS= muTS_TI05*QS^((DPTI05$Tavg-TR)/10)  # Eq. 5
@@ -438,3 +431,31 @@ p_loss<-function(Runoffmodel=TIC05,tau=9.3, dt=1, kF=.015, TI=1){
   return(DPTI05)
   
 }
+
+#fIRST we need to calculate the average of DF and DS for each class and then assign the 
+#value to each class in TIC product.............
+TIC01=PLossFunc(DPTIdf = TIC01,tau=9.3,dt=1,kF=.015,TICn=1)
+TIC02=PLossFunc(DPTIdf = TIC02,tau=9.3,dt=1,kF=.015,TICn=1)
+TIC03=PLossFunc(DPTIdf = TIC03,tau=9.3,dt=1,kF=.015,TICn=1)
+TIC04=PLossFunc(DPTIdf = TIC04,tau=9.3,dt=1,kF=.015,TICn=1)
+TIC05=PLossFunc(DPTIdf = TIC05,tau=9.3,dt=1,kF=.015,TICn=1)
+
+
+label1=mean(TIC01$DF+TIC01$DS)*365
+label2=mean(TIC02$DF+TIC02$DS)*365
+label3=mean(TIC03$DF+TIC03$DS)*365
+label4=mean(TIC04$DF+TIC04$DS)*365
+label5=mean(TIC05$DF+TIC05$DS)*365
+
+L <- c(1,label1, 2,label2,3,label3,4,label4,5,label5)
+label <- matrix(L, ncol=2, byrow=TRUE)
+updated_TIC <- reclassify(TIC, label)
+
+
+install.packages('rasterVis')
+library(rasterVis)
+gplot(TIC) +  
+  geom_tile(aes(fill=factor(value)))
+gplot(updated_TIC) +  
+  geom_tile(aes(fill=factor(value)))
+
